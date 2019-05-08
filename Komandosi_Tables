@@ -1,0 +1,62 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+const int offset = 1<<20;
+int T[offset*2];
+void Set(int id, int lo, int hi, int pos, int val){
+  if (lo > pos || hi < pos) return;
+  if (lo == hi){T[id] = val; return;}
+  int mid = (lo+hi)/2;
+  Set(id*2, lo, mid, pos, val);
+  Set(id*2+1, mid+1, hi, pos, val);
+  T[id] = max(T[id*2], T[id*2+1]);
+}
+
+const int NONE = -1;
+int LowerBound(int id, int lo, int hi, int limit){
+  if (T[id] < limit) return NONE;
+  if (lo == hi) return lo;
+  int mid = (lo+hi)/2;
+  int left = LowerBound(id*2, lo, mid, limit);
+  if (left == NONE) return LowerBound(id*2+1, mid+1, hi, limit);
+  else return left;
+}
+
+void solve(istream &in, ostream &out){
+  int n, m;
+  in >> n >> m;
+  vector<int> t(n);
+  for (auto &x : t) in >> x;
+  vector<int> g(m);
+  for (auto &x : g) in >> x;
+
+  for (int i = 0; i < n; ++i)
+    Set(1, 0, offset-1, i, t[i]);
+
+  for (auto team : g){
+    int table = LowerBound(1, 0, offset-1, team);
+    if (table == NONE){
+      out << 0 << " ";
+      continue;
+    }
+
+    out << table+1 << " ";
+    assert(t[table] >= team);
+    t[table] -= team;
+    Set(1, 0, offset-1, table, t[table]);
+  } out << endl;
+}
+
+int main(int argc, char **argv){
+  assert(argc == 2);
+
+  string input = argv[1];
+  string output = input.substr(0, input.size()-2) + "out";
+
+  ifstream in(input);
+  ofstream out(output);
+  solve(in, out);
+  
+  return 0;
+}
