@@ -1,0 +1,16 @@
+import math
+
+rx,otocix=input('').split()
+r=float(rx)
+otoci=int(otocix)
+
+p1=r*r*math.pi
+p2=0
+
+for i in range(0,otoci):
+    radijusotoka=float(input(''))
+    p2=float((radijusotoka*radijusotoka)+p2)
+    
+
+vjerojatnost=((1-(p2*math.pi)/p1))
+print('{:.2f}'.format(vjerojatnost))
